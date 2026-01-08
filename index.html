@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <button id="toggleTareas">Mostrar / Ocultar tareas</button>
     <button onclick="mostrarFormulario()">Agregar tarea</button>
 
     <form id="formTarea" style="display:none;" onsubmit="return agregarTarea()">
@@ -25,7 +27,12 @@
 
         <button type="submit">Guardar</button>
     </form>
-
+    <hr>
+    <section>
+        <h2>Lista de tareas</h2>
+        <article id="contenedorTareas">
+        </article>
+    </section>
     <script src="script.js"></script>
 </body>
 </html>
