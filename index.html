@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="mostrarFormulario()">Agregar tarea</button>
+
+    <form id="formTarea" style="display:none;" onsubmit="return agregarTarea()">
+        <input type="text" id="titulo" placeholder="Título" required>
+        <br><br>
+
+        <input type="text" id="descripcion" placeholder="Descripción" required>
+        <br><br>
+
+        <select id="prioridad" required>
+            <option value="">Seleccione prioridad</option>
+            <option value="ALTA">Alta</option>
+            <option value="MEDIA">Media</option>
+            <option value="BAJA">Baja</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>
