@@ -1,0 +1,80 @@
+#contenedorTareas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    transform-origin: top center;
+}
+
+#contenedorTareas.oculto{
+    transform: translateY(-50px) scale(0.8);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#contenedorTareas article {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    width: 300px;          /* ancho fijo */
+    padding: 1rem;
+    border: 1px solid #000;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: transform 0.5s ease, opacity 0.5 ease;
+}
+
+h2{
+    text-align: center;
+}
+:root{
+    --Header-color: #fff;
+    --Bg-main: #f4f4f4;
+    --Int-color: #c0b283;
+    --Black-color: #373737;
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--Bg-main) !important;
+}
+
+body, button, input, .form-control, .btn {
+    font-family: 'Courier New', Courier, monospace, !important;
+}
+
+.hidden-form {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-add{
+    border-radius: 0 !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-add:hover{
+    border-bottom: solid 2px var(--Int-color) !important;
+}
+
+.btn-add:active{
+    transform: translateY(2px);
+}
+
+.bg-nav{
+    background-color: var(--Header-color) !important;
+}
+
+.logo-wrapper svg{
+    color: var(--Black-color);
+}
