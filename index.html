@@ -9,6 +9,12 @@
 <body>
     <button id="toggleTareas">Mostrar / Ocultar tareas</button>
     <button onclick="mostrarFormulario()">Agregar tarea</button>
+        <select id="filtroPrioridad">
+            <option value="">Todas</option>
+            <option value="ALTA">Alta</option>
+            <option value="MEDIA">Media</option>
+            <option value="BAJA">Baja</option>
+        </select>
 
     <form id="formTarea" style="display:none;" onsubmit="return agregarTarea()">
         <input type="text" id="titulo" placeholder="Título" required>
@@ -27,6 +33,7 @@
 
         <button type="submit">Guardar</button>
     </form>
+
     <hr>
     <section>
         <h2>Lista de tareas</h2>
