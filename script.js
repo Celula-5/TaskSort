@@ -69,32 +69,50 @@ function crearTarjeta(tarea){
     contenedor.appendChild(tarjeta)
 }
 
-function esconderTarjetas(){
-    const btnToogle = document.getElementById("toggleTareas")
-    const contenedor = document.getElementById("contenedorTareas")
+let isVisible = false;
+const btnToogle = document.getElementById("toggleTasks");
+const textVisibility = document.getElementById("Text-visibility");
+const container = document.getElementById("Taskcontainer");
 
-    btnToogle.addEventListener("click", () => {
-        contenedor.classList.toggle("oculto")
-    })
+function toggleTasks(){
+
+    isVisible = !isVisible;
+
+    if (isVisible){
+        textVisibility.textContent = "Hide tasks";
+        btnToogle.classList.add("active");
+        container.classList.style = "none";
+    }
+    else{
+        textVisibility.textContent = "Show tasks";
+        btnToogle.classList.add("active");
+        container.classList.style = "block";
+    }
 }
 
+if(btnToogle){
+    btnToogle.addEventListener("click", toggleTasks)
+}
+
+
+
 function filtroTarea(){
-    const filtro = document.getElementById("filtroPrioridad")
-    filtro.addEventListener("change", aplicarFiltro)
+    const filter = document.getElementById("Priority-filter")
+    filter.addEventListener("change", aplicarFiltro)
 }
 
 function aplicarFiltro() {
-    const filtro = document.getElementById("filtroPrioridad")
-    const prioridad = filtro.value.toUpperCase()
-    const tarjetas = document.querySelectorAll("#contenedorTareas article")
+    const filter = document.getElementById("Priority-filter")
+    const priority = filtro.value.toUpperCase()
+    const cards = document.querySelectorAll("#contenedorTareas article")
 
-    tarjetas.forEach(tarjeta => {
-        const prioridadTarjeta = tarjeta.dataset.prioridad
+    cards.forEach(card => {
+        const priorityCard = card.dataset.prioridad
 
-        if (!prioridad || prioridadTarjeta === prioridad) {
-            tarjeta.style.display = "inline-block"
+        if (!priority|| priorityCard === priority) {
+            card.style.display = "inline-block"
         } else {
-            tarjeta.style.display = "none"
+            card.style.display = "none"
         }
     })
 }
