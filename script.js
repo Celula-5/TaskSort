@@ -1,34 +1,40 @@
 let ListaTareas = []
 
 function mostrarFormulario() {
-    document.getElementById("formTarea").style.display = "block";
+    const contenedor = document.getElementById("formContainer");
+    contenedor.style.display =
+        contenedor.style.display === "none" ? "block" : "none";
 }
 
-
-function agregarTarea(){
-
-    const titulo = document.getElementById("titulo").value
-    const descripcion = document.getElementById("descripcion").value
-    const prioridad = document.getElementById("prioridad").value
-    const tarea = {
-        titulo,
-        descripcion,
-        prioridad
+function agregarTarea() {
+    const titulo = document.getElementById("titulo").value.trim()
+    const descripcion = document.getElementById("descripcion").value.trim()
+    const prioridad = document.getElementById("prioridad").value.trim()
+    if (!titulo) {
+        alert("Debe ingresar un título válido")
+        return false
+    }
+    
+    if (!descripcion) {
+        alert("Debe ingresar una descripción válida")
+        return false
     }
 
+    const tarea = { titulo, descripcion, prioridad }
+
     ListaTareas.push(tarea)
-    console.log(ListaTareas)
+    guardarTareas()
+
     crearTarjeta(tarea)
     aplicarFiltro()
-    esconderTarjetas(tarea)
-    filtroTarea(tarea)
-    alert("tarea agregada")
-    
-    document.getElementById("formTarea").style.display = "none";
-    document.getElementById("formTarea").reset()
-    return false
+    actualizarContadores()
 
+    document.getElementById("formContainer").style.display = "none"
+    document.getElementById("formTarea").reset()
+
+    return false
 }
+
 
 function crearTarjeta(tarea){
     const contenedor = document.getElementById("contenedorTareas")
@@ -62,6 +68,11 @@ function crearTarjeta(tarea){
     btnEliminar.style.marginTop = "10px";
     btnEliminar.addEventListener("click", () => {
         tarjeta.remove(); 
+        ListaTareas = ListaTareas.filter(t => t !== tarea);
+
+        guardarTareas();
+
+        actualizarContadores();
     });
 
     tarjeta.appendChild(btnEliminar);
@@ -69,32 +80,72 @@ function crearTarjeta(tarea){
     contenedor.appendChild(tarjeta)
 }
 
-function esconderTarjetas(){
-    const btnToogle = document.getElementById("toggleTareas")
+
+function actualizarContadores() {
+    const filtro = document.getElementById("filtroPrioridad")
+
+    const total = ListaTareas.length
+    const altas = ListaTareas.filter(t => t.prioridad === "ALTA").length
+    const medias = ListaTareas.filter(t => t.prioridad === "MEDIA").length
+    const bajas = ListaTareas.filter(t => t.prioridad === "BAJA").length
+
+    filtro.querySelector("option[value='']").textContent = `Todas (${total})`
+    filtro.querySelector("option[value='ALTA']").textContent = `Alta (${altas})`
+    filtro.querySelector("option[value='MEDIA']").textContent = `Media (${medias})`
+    filtro.querySelector("option[value='BAJA']").textContent = `Baja (${bajas})`
+}
+
+
+function esconderTarjetas() {
+    const btn = document.getElementById("toggleTareas")
     const contenedor = document.getElementById("contenedorTareas")
 
-    btnToogle.addEventListener("click", () => {
+    btn.addEventListener("click", () => {
         contenedor.classList.toggle("oculto")
     })
 }
 
-function filtroTarea(){
-    const filtro = document.getElementById("filtroPrioridad")
-    filtro.addEventListener("change", aplicarFiltro)
+function filtroTarea() {
+    document.getElementById("filtroPrioridad")
+        .addEventListener("change", aplicarFiltro)
 }
 
+function guardarTareas() {
+    localStorage.setItem("tareas", JSON.stringify(ListaTareas))
+}
+
+function cargarTareas() {
+    const tareasGuardadas = localStorage.getItem("tareas")
+
+    if (tareasGuardadas) {
+        ListaTareas = JSON.parse(tareasGuardadas)
+
+        ListaTareas.forEach(tarea => {
+            crearTarjeta(tarea)
+        })
+
+        actualizarContadores()
+        aplicarFiltro()
+    }
+}
+
+
 function aplicarFiltro() {
-    const filtro = document.getElementById("filtroPrioridad")
-    const prioridad = filtro.value.toUpperCase()
+    const prioridad = document.getElementById("filtroPrioridad").value
     const tarjetas = document.querySelectorAll("#contenedorTareas article")
 
     tarjetas.forEach(tarjeta => {
-        const prioridadTarjeta = tarjeta.dataset.prioridad
-
-        if (!prioridad || prioridadTarjeta === prioridad) {
-            tarjeta.style.display = "inline-block"
-        } else {
-            tarjeta.style.display = "none"
-        }
+        tarjeta.style.display =
+            !prioridad || tarjeta.dataset.prioridad === prioridad
+                ? "block"
+                : "none"
     })
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    esconderTarjetas()
+    filtroTarea()
+    actualizarContadores()
+    cargarTareas()
+
+})
