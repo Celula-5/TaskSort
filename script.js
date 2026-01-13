@@ -39,7 +39,7 @@ if(addBtn){
 
     const toggleTask = () => {
         if(taskSection){
-            taskSection.style.display = "block" ;
+            taskSection.style.display = "flex" ;
         }
     };
 
@@ -134,7 +134,7 @@ function toggleTasks() {
         textVisibility.textContent = "Show tasks";
         btnToogle.classList.remove("active");
         eyeIcon.className = "bi bi-eye me-2";
-        container.style.display = "block";
+        container.style.display = "flex";
     }
 }
 
