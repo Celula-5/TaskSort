@@ -78,7 +78,7 @@ function addTask(event) {
 function taskUI(task, index) {
     const container = document.getElementById("Taskcontainer");
     const card = document.createElement("div");
-    card.className = "col-10 col-md-6 col-lg-3 task-col";
+    card.className = "col-12 col-md-6 col-lg-3 task-col";
     card.dataset.priority = task.priority;
 
     card.innerHTML = `
@@ -87,8 +87,8 @@ function taskUI(task, index) {
             <p class="flex-grow-1 small text-muted">${task.description}</p>
             <span class="priority-tag priority-${task.priority}">${task.priority}</span>
             <div class="mt-2">
-                <label class="small fw-bold">Status:</label>
-                <select class="form-select py-3 form-select-sm mt-1 dataFormTask">
+                <label for="status-${task.id}" class="small fw-bold">Status:</label>
+                <select id="status-${task.id}" class="form-select py-3 form-select-sm mt-1 dataFormTask">
                     <option value='pending'>Pending</option>
                     <option value='process'>In process</option>
                     <option value='complete'>Complete</option>
