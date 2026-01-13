@@ -177,7 +177,7 @@ function sort(selection) {
     allCards.forEach(card => {
         const cardPriority = card.dataset.priority;
         if (selection === "All" || cardPriority === selection) {
-            card.style.display = "inline-block";
+            card.style.display = "";
         } else {
             card.style.display = "none";
         }
