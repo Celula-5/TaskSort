@@ -1,118 +1,191 @@
-let ListaTareas = []
+let taskList = [];
+let isVisible = false;
+let isFilterVisible = false;
 
-function mostrarFormulario() {
-    document.getElementById("formTarea").style.display = "block";
-}
+const btnToogle = document.getElementById("toggleTasks");
+const addBtn = document.getElementById("Add-Task");
+const btnFilter = document.getElementById("Priority-filter");
+
+const eyeIcon = document.getElementById("eyeIcon");
+const textVisibility = document.getElementById("Text-visibility");
+
+const container = document.getElementById("Taskcontainer");
+const menuFilter = document.getElementById("FilterMenu");
+
+const taskSection = document.getElementById("Modal-Wrapper");
 
 
-function agregarTarea(){
-
-    const titulo = document.getElementById("titulo").value
-    const descripcion = document.getElementById("descripcion").value
-    const prioridad = document.getElementById("prioridad").value
-    const tarea = {
-        titulo,
-        descripcion,
-        prioridad
+function loadTask(){
+    const saved = localStorage.getItem("Current_Tasks")
+    if(saved){
+        taskList = JSON.parse(saved)
+        renderTasks();
     }
+};
 
-    ListaTareas.push(tarea)
-    console.log(ListaTareas)
-    crearTarjeta(tarea)
-    aplicarFiltro()
-    esconderTarjetas(tarea)
-    filtroTarea(tarea)
-    alert("tarea agregada")
-    
-    document.getElementById("formTarea").style.display = "none";
-    document.getElementById("formTarea").reset()
-    return false
-
+function saveTasks(){
+    localStorage.setItem("Current_Tasks" , JSON.stringify(taskList));
+    console.log("synchronization complete");
 }
 
-function crearTarjeta(tarea){
-    const contenedor = document.getElementById("contenedorTareas")
+function renderTasks(){
+    container.innerHTML = "";
+    taskList.forEach((task, index) => {
+        taskUI(task, index)
+    });
+}
 
-    const tarjeta = document.createElement("article")
-    tarjeta.style.textAlign = ("center")
-    tarjeta.style.border = "1px solid #000"
-    tarjeta.style.padding = "10px"
-    tarjeta.style.margin = ("10px 0")
-    tarjeta.style.marginLeft = ("10px")
-    tarjeta.style.maxWidth = "auto"
-    tarjeta.style.display = "inline-block"
+if(addBtn){
 
+    const toggleTask = () => {
+        if(taskSection){
+            taskSection.style.display = "block" ;
+        }
+    };
 
-    tarjeta.innerHTML = 
-        "<h3>" + tarea.titulo + "</h3> " +
-        "<p>" + tarea.descripcion + "</p>" +
-        "<strong>prioridad:" + tarea.prioridad + "</strong>" +
-        "<br><br>" +
-        "<label>Estado: </label>" +
-        "<select>" +
-            "<option value='pendiente'>Pendiente</option>" +
-            "<option value='en_proceso'>En proceso</option>" +
-            "<option value='completada'>Completada</option>" +
-        "</select>"
+    addBtn.addEventListener("click", toggleTask)
+}
 
-        tarjeta.dataset.prioridad = tarea.prioridad
+function closeModal(){
+    taskSection.style.display = "none";
+}
 
-    const btnEliminar = document.createElement("button");
-    btnEliminar.textContent = "Eliminar";
-    btnEliminar.style.marginTop = "10px";
-    btnEliminar.addEventListener("click", () => {
-        tarjeta.remove(); 
+function addTask(event) {
+    if(event) event.preventDefault();
+
+    const task ={
+        id: Date.now(),
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        priority: document.getElementById("priority").value
+    };
+
+    taskList.push(task);
+    saveTasks()
+    renderTasks()
+    console.log(taskList);
+    textVisibility.textContent = "Hide tasks";
+    
+    taskUI(task);
+
+    sort("All")
+    
+    taskSection.style.display = "none";
+    document.getElementById("formTask").reset();
+    return false;
+}
+
+function taskUI(task, index) {
+    const container = document.getElementById("Taskcontainer");
+    const card = document.createElement("div");
+    card.className = "col-10 col-md-6 col-lg-3 task-col";
+    card.dataset.priority = task.priority;
+
+    card.innerHTML = `
+        <article class="task-card">
+            <h3 class="fw-bold border-bottom pb-2">${task.title}</h3>
+            <p class="flex-grow-1 small text-muted">${task.description}</p>
+            <span class="priority-tag priority-${task.priority}">${task.priority}</span>
+            <div class="mt-2">
+                <label class="small fw-bold">Status:</label>
+                <select class="form-select py-3 form-select-sm mt-1 dataFormTask">
+                    <option value='pending'>Pending</option>
+                    <option value='process'>In process</option>
+                    <option value='complete'>Complete</option>
+                </select>
+                <button class="mt-3 btn btn-add" onclick="deleteTask(${index})"><i class="bi bi-trash me-1"></i>Delete</button>
+            </div>
+        </article>
+    `;
+
+    const taskValue = card.querySelector(".dataFormTask")
+    taskValue.addEventListener("change", (e) =>{
+        if(e.target.value === 'complete'){
+
+            card.style.opacity = "0";
+            card.style.transform = "scale(0.9)";
+            card.style.transition = "0.3s all ease-in-out";
+
+            setTimeout(() =>{
+                deleteTask();
+            }, 200)
+            
+        }
     });
 
-    tarjeta.appendChild(btnEliminar);
-
-    contenedor.appendChild(tarjeta)
+    container.appendChild(card);
 }
 
-let isVisible = false;
-const btnToogle = document.getElementById("toggleTasks");
-const textVisibility = document.getElementById("Text-visibility");
-const container = document.getElementById("Taskcontainer");
+function deleteTask(index){
+    taskList.splice(index, 1);
+    saveTasks();
+    renderTasks();
+}
 
-function toggleTasks(){
-
+function toggleTasks() {
     isVisible = !isVisible;
 
-    if (isVisible){
+    if (isVisible) {
         textVisibility.textContent = "Hide tasks";
         btnToogle.classList.add("active");
-        container.classList.style = "none";
-    }
-    else{
+        eyeIcon.className = "bi bi-eye-slash me-2";
+        container.style.display = "none";
+    } else {
         textVisibility.textContent = "Show tasks";
-        btnToogle.classList.add("active");
-        container.classList.style = "block";
+        btnToogle.classList.remove("active");
+        eyeIcon.className = "bi bi-eye me-2";
+        container.style.display = "block";
     }
 }
 
-if(btnToogle){
-    btnToogle.addEventListener("click", toggleTasks)
+if (btnToogle) {
+    btnToogle.addEventListener("click", toggleTasks);
 }
 
+function filterWiew() {
+    isFilterVisible = !isFilterVisible;
 
-
-function filtroTarea(){
-    const filter = document.getElementById("Priority-filter")
-    filter.addEventListener("change", aplicarFiltro)
+    if (isFilterVisible) {
+        if (btnFilter) btnFilter.classList.add("active");
+        if (menuFilter) menuFilter.style.display = "block";
+    } else {
+        if (btnFilter) btnFilter.classList.remove("active");
+        if (menuFilter) menuFilter.style.display = "none";
+    }
 }
 
-function aplicarFiltro() {
-    const filter = document.getElementById("Priority-filter")
-    const priority = filtro.value.toUpperCase()
-    const cards = document.querySelectorAll("#contenedorTareas article")
+if (btnFilter) {
+    btnFilter.addEventListener("click", (e) => {
+        e.stopPropagation();
+        filterWiew();
+    });
+}
 
-    cards.forEach(card => {
-        const priorityCard = card.dataset.prioridad
+document.addEventListener("click", () => {
+    if (isFilterVisible) {
+        isFilterVisible = false;
+        if (menuFilter) menuFilter.style.display = "none";
+        if (btnFilter) btnFilter.classList.remove("active");
+    }
+});
 
-        if (!priority|| priorityCard === priority) {
-            card.style.display = "inline-block"
+function sort(selection) {
+    renderTasks();
+    const allCards = document.querySelectorAll(".task-col");
+    const displayLabel = document.getElementById("selectedFilter");
+    
+    allCards.forEach(card => {
+        const cardPriority = card.dataset.priority;
+        if (selection === "All" || cardPriority === selection) {
+            card.style.display = "inline-block";
         } else {
-            card.style.display = "none"
+            card.style.display = "none";
         }
-    })
-}
+    });
+    
+    if (displayLabel) {
+        displayLabel.textContent = selection === "All" ? "Filter" : selection;
+    }
+}   
+
+window.onload = loadTask;
