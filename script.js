@@ -8,11 +8,36 @@ const btnFilter = document.getElementById("Priority-filter");
 
 const eyeIcon = document.getElementById("eyeIcon");
 const textVisibility = document.getElementById("Text-visibility");
+const incorrectmsg = document.getElementById("Incorrect");
 
 const container = document.getElementById("Taskcontainer");
 const menuFilter = document.getElementById("FilterMenu");
 
 const taskSection = document.getElementById("Modal-Wrapper");
+
+function testForm() {
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const priority = document.getElementById("priority").value;
+
+    
+    if (title === "" || description === "" || priority === "") {
+        if(incorrectmsg){
+            incorrectmsg.style.color = "red";
+            incorrectmsg.textContent = "You can't the form empty"
+
+            setTimeout(() => {
+                incorrectmsg.textContent = "";
+            },2000)
+
+            document.getElementById("formTask").reset();
+        }
+        return false;
+    }
+
+    return true;
+}
+
 
 
 function loadTask(){
@@ -53,6 +78,11 @@ function closeModal(){
 function addTask(event) {
     if(event) event.preventDefault();
 
+    if (!testForm()) {
+    console.warn("Form is empty or invalid");
+    return;
+    }
+
     const task ={
         id: Date.now(),
         title: document.getElementById("title").value,
@@ -64,11 +94,14 @@ function addTask(event) {
     saveTasks()
     renderTasks()
     console.log(taskList);
+
     textVisibility.textContent = "Hide tasks";
     
     taskUI(task);
 
-    sort("All")
+    sort("All");
+
+    closeModal();
     
     taskSection.style.display = "none";
     document.getElementById("formTask").reset();

@@ -65,9 +65,10 @@
 
                     <div class="card-body fade-in">
 
-                        <h2 class="text-center card-title mb-4 fw-bold">Create your task</h2>
+                        <h2 class="text-center card-title mb-2 fw-bold">Create your task</h2>
+                        <div id="Incorrect" class="mb-2 text-center"></div>
 
-                        <form id="formTask" class="" onsubmit="addTask(event); return false">
+                        <form id="formTask" class="" onsubmit="addTask(event) ;return false">
 
                             <label for="title">Title</label>
                             <input class="form-control mb-3" type="text" id="title" placeholder="Homework" required>
@@ -83,7 +84,7 @@
                             </select>
 
                             <div class="Task">
-                                <button class="btn btn-add" type="submit" onclick="closeModal()">Save</button>
+                                <button class="btn btn-add" type="submit">Save</button>
                                 <button class="btn btn-add" type="button" onclick="closeModal()">Cancel</button>
                             </div>
                         </form>
